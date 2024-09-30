@@ -29,11 +29,34 @@ async function createWindow() {
         limit: 10
     });
 
-    //console.log(me);
-    console.log(me.profile_photo);
-    //console.log(chats);
+    // Upload profile photo
+    /*photo = me.profile_photo;
+    if (photo) {
+        const file = await client.invoke({
+            _: 'downloadFile',
+            file: photo,
+            file_name: 'profile_photo.jpg',
+            mime_type: 'image/jpeg'
+        });
+        const result = await client.invoke({
+            _: 'uploadProfilePhoto',
+            file_id: file.id
+        });
+        photo = result;
+    }*/
+    //console.log(me.profile_photo);
+    const photo = await client.invoke({
+        _: 'downloadFile',
+        file_id: me.profile_photo.small.id,
+        priority: 1,
+        offset: 0,
+        limit: 0,
+        synchronous:false
+    });
+    console.log(photo);
     win.webContents.send('user-info', me);
     win.webContents.send('chats-info', chats);
+    win.webContents.send('user-photo', photo);
 }
 
 app.whenReady().then(createWindow);

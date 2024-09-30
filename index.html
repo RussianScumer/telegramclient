@@ -61,12 +61,15 @@
 
         ipcRenderer.on('user-info', (event, { me }) => {
             document.getElementById('user-info').innerText = JSON.stringify(me);
-            document.getElementById('user-photo').src = me.profile_photo.small.remote;
+            
             
         });
 
         ipcRenderer.on('chats-info', (event, chatsInfo) => {
             document.getElementById('chats-info').innerText = JSON.stringify(chatsInfo, null, 2);
+        });
+        ipcRenderer.on('user-photo', (event, photo)=>{
+            document.getElementById('user-photo').src = photo.local.path;
         });
     </script>
 </body>
