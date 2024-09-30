@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const tdl = require('tdl');
 
 require('dotenv').config();
@@ -19,15 +19,21 @@ async function createWindow() {
 
     const { getTdjson } = require('prebuilt-tdlib')
     tdl.configure({ tdjson: getTdjson() })
-    const client = tdl.createClient({apiId: apiId, apiHash: apiHash});
+    const client = tdl.createClient({ apiId: apiId, apiHash: apiHash });
+
     client.login();
     const me = await client.invoke({ _: 'getMe' });
-    console.log('My user:', me);
     const chats = await client.invoke({
         _: 'getChats',
         chat_list: { _: 'chatListMain' },
         limit: 10
-      });
+    });
+
+    //console.log(me);
+    console.log(me.profile_photo);
+    //console.log(chats);
+    win.webContents.send('user-info', me);
+    win.webContents.send('chats-info', chats);
 }
 
 app.whenReady().then(createWindow);
